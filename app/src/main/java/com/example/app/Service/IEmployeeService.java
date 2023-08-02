@@ -9,7 +9,7 @@ public interface IEmployeeService {
 	//save new emp details
 	Employee saveEmpDetails(Employee transientEmp);
 	//delete emp details
-	String deleteEmpDetails(int empId);
+	boolean deleteEmpDetails(int empId);
 	//get emp details by specified id
 	Employee getEmpDetails(int empId);
 	//update existing emp details

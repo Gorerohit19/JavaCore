@@ -6,53 +6,52 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.app.custome_exceptions;
+
 import com.example.app.dao.EmployeeRepository;
 import com.example.app.pojos.Employee;
 
 @Service
 @Transactional
-public class EmployeeService {
-    // dep : emp repo.
+public class EmployeeService implements IEmployeeService{
 	@Autowired
-	private EmployeeRepository empRepo;
+	private EmployeeRepository _empRepo;
 
 	@Override
 	public List<Employee> getAllEmpDetails() {
 		// TODO Auto-generated method stub
-		return empRepo.findAll();
-	}
-
-	@Override
-	public Employee saveEmpDetails(Employee transientEmp) {
-		// TODO Auto-generated method stub
-		return empRepo.save(transientEmp);// method rets PERSISTENT emp ref
-	}// in case of no errs : hib auto dirty chking @ session.flush ---tx.commit
-		// --inserts rec --L1 cache destroyed -- pooled out db cn rets to the pool
-		// --rets DETACHED pojo to the caller
-
-	@Override
-	public String deleteEmpDetails(int empId) {
-		String mesg = "Deletion of emp details failed!!!!!!!!!!!";
-
-		if (empRepo.existsById(empId)) {
-			empRepo.deleteById(empId);
-			mesg = "Emp details deleted successfully , for emp id :" + empId;
-		}
-
-		return mesg;
+		return _empRepo.findAll();
 	}
 
 	@Override
 	public Employee getEmpDetails(int empId) {
 		// TODO Auto-generated method stub
-		return empRepo.findById(empId)
-				.orElseThrow(() -> new ResourceNotFoundException("Invalid emp id !!!!!!" + empId));
+		return _empRepo.findById(empId)
+		.orElseThrow(()-> new ResourceNotFoundException("Invalid Employee Id....."+ empId));
 	}
 
 	@Override
-	public Employee updateEmpDetails(Employee updatedDetachedEmp) {
+	public Employee saveEmpDetails(Employee theEmployee) {
 		// TODO Auto-generated method stub
-		return empRepo.save(updatedDetachedEmp);
+		return _empRepo.save(theEmployee);
 	}
+
+	@Override
+	public boolean deleteEmpDetails(int empId) {
+		// TODO Auto-generated method stub
+		boolean status = false;
+		if(_empRepo.existsById(empId))
+		{
+			_empRepo.deleteById(empId);
+			status = true;
+		}
+		return status;
+	}
+
+	@Override
+	public Employee updateEmpDetails(Employee theEmployee) {
+		// TODO Auto-generated method stub
+		return _empRepo.save(theEmployee);
+	}
+	
+    
 }
